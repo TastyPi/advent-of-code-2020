@@ -12,18 +12,14 @@ triples :: [a] -> [[a]]
 triples [] = []
 triples (x:xs) = map (x:) (pairs xs) ++ triples xs
 
-onlyElement :: [a] -> a
-onlyElement [x] = x
-onlyElement _ = error $ "List does not have a single element"
+findSolutions :: (Eq a, Num a) => [[a]] -> [a]
+findSolutions = map product . filter ((== 2020) . sum)
 
-findSolution :: (Eq a, Num a) => [[a]] -> a
-findSolution = product . onlyElement . filter ((== 2020) . sum)
+computePart1 :: (Eq a, Num a) => [a] -> [a]
+computePart1 = findSolutions . pairs
 
-computePart1 :: (Eq a, Num a) => [a] -> a
-computePart1 = findSolution . pairs
-
-computePart2 :: (Eq a, Num a) => [a] -> a
-computePart2 = findSolution . triples
+computePart2 :: (Eq a, Num a) => [a] -> [a]
+computePart2 = findSolutions . triples
 
 withInput :: Read a => ([a] -> IO b) -> IO b
 withInput f = withFile "data/Day1/input.txt" ReadMode $ hGetContents >=> (f . map read . lines)
