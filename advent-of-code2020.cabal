@@ -13,5 +13,5 @@ executable day1
   hs-source-dirs:    src
   main-is:           Day1/Main.hs
   ghc-options:       -main-is Day1.Main
-  build-depends:     base
+  build-depends:     base, product-profunctors
 
