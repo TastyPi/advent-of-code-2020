@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeApplications #-}
 module Day1.Main where
 
 import Control.Monad
@@ -24,12 +25,10 @@ computePart1 = findSolution . pairs
 computePart2 :: (Eq a, Num a) => [a] -> a
 computePart2 = findSolution . triples
 
-type Entry = Int
-
-withInput :: ([Entry] -> IO a) -> IO a
-withInput f = withFile "data/Day1/input.txt" ReadMode $  (f . map read . lines) <=< hGetContents
+withInput :: Read a => ([a] -> IO b) -> IO b
+withInput f = withFile "data/Day1/input.txt" ReadMode $ hGetContents >=> (f . map read . lines)
 
 main :: IO ()
-main = withInput $ \input -> do
+main = withInput @Int $ \input -> do
   putStrLn $ "Part 1: " ++ show (computePart1 input)
   putStrLn $ "Part 2: " ++ show (computePart2 input)
