@@ -1,9 +1,6 @@
-{-# LANGUAGE LambdaCase, TupleSections, TypeApplications #-}
 module Day1.Main where
 
-import Control.Arrow
 import Control.Monad
-import Data.Profunctor.Product.Flatten
 import System.IO
 
 pairs :: [a] -> [[a]]
