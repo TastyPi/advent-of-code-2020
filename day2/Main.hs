@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Day2.Main where
+module Main where
 
 import Control.Monad ((>=>))
 import Data.Attoparsec.Text
@@ -16,7 +16,7 @@ import Data.Attoparsec.Text
     takeTill,
   )
 import Data.Range (inRange, (+=+))
-import Data.Text (index, Text, count, singleton)
+import Data.Text (Text, count, index, singleton)
 import Data.Text.IO (hGetContents)
 import System.IO (IOMode (ReadMode), withFile)
 
@@ -37,11 +37,11 @@ satisfiesPart1 :: Policy -> Password -> Bool
 satisfiesPart1 Policy {..} = inRange (x +=+ y) . count (singleton c)
 
 satisfiesPart2 :: Policy -> Password -> Bool
-satisfiesPart2 Policy {..} p = (index p (x-1) == c) /= (index p (y-1) == c)
+satisfiesPart2 Policy {..} p = (index p (x -1) == c) /= (index p (y -1) == c)
 
 withInput :: (String -> IO a) -> ([(Policy, Password)] -> IO a) -> IO a
 withInput onError onSuccess =
-  withFile "data/Day2/input.txt" ReadMode $
+  withFile "data/day2/input.txt" ReadMode $
     hGetContents >=> (either onError onSuccess . parseOnly (policyAndPassword `sepBy` char '\n'))
 
 main :: IO ()
