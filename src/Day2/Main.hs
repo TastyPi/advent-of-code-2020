@@ -15,34 +15,29 @@ import Data.Attoparsec.Text
     string,
     takeTill,
   )
-import Data.Range (Range, inRange, (+=+))
-import Data.Text (Text, count, singleton)
+import Data.Range (inRange, (+=+))
+import Data.Text (index, Text, count, singleton)
 import Data.Text.IO (hGetContents)
 import System.IO (IOMode (ReadMode), withFile)
 
 type Password = Text
 
-type Policy = Password -> Bool
-
-range :: Integral a => Parser (Range a)
-range = do
-    l <- decimal
-    _ <- char '-'
-    u <- decimal
-    return $ l +=+ u
+data Policy = Policy {x :: Int, y :: Int, c :: Char}
 
 policy :: Parser Policy
-policy = do
-    r <- range
-    _ <- char ' '
-    x <- anyChar
-    return $ inRange r . count (singleton x)
+policy = Policy <$> decimal <*> (char '-' *> decimal) <*> (char ' ' *> anyChar)
 
 password :: Parser Password
 password = takeTill isEndOfLine
 
 policyAndPassword :: Parser (Policy, Password)
 policyAndPassword = (,) <$> policy <*> (string ": " *> password)
+
+satisfiesPart1 :: Policy -> Password -> Bool
+satisfiesPart1 Policy {..} = inRange (x +=+ y) . count (singleton c)
+
+satisfiesPart2 :: Policy -> Password -> Bool
+satisfiesPart2 Policy {..} p = (index p (x-1) == c) /= (index p (y-1) == c)
 
 withInput :: (String -> IO a) -> ([(Policy, Password)] -> IO a) -> IO a
 withInput onError onSuccess =
@@ -51,4 +46,5 @@ withInput onError onSuccess =
 
 main :: IO ()
 main = withInput putStrLn $ \input -> do
-  putStrLn $ "Part 1: " ++ show (length $ filter (uncurry id) input)
+  putStrLn $ "Part 1: " ++ show (length $ filter (uncurry satisfiesPart1) input)
+  putStrLn $ "Part 2: " ++ show (length $ filter (uncurry satisfiesPart2) input)
