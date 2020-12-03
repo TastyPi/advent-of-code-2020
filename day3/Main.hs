@@ -26,6 +26,10 @@ slope m Slope {..} = go right down
 treesOnSlope :: Map -> Slope -> Int
 treesOnSlope m s = length $ filter isTree $ slope m s
 
+part2Slopes :: [Slope]
+part2Slopes = [Slope 1 1, Slope 3 1, Slope 5 1, Slope 7 1, Slope 1 2]
+
 main :: IO ()
-main = withInputLines "data/day3/input.txt" $ \inputLines ->
+main = withInputLines "data/day3/input.txt" $ \inputLines -> do
   putStrLn $ "Part 1: " ++ show (treesOnSlope inputLines (Slope 3 1))
+  putStrLn $ "Part 2: " ++ show (product $ map (treesOnSlope inputLines) part2Slopes)
