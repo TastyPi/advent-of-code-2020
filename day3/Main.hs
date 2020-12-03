@@ -5,6 +5,7 @@ module Main where
 import Advent2020 (withInputLines)
 import Data.Text (Text, index)
 import qualified Data.Text as Text
+import Control.Parallel.Strategies (parMap, rdeepseq)
 
 type Map = [Text]
 
@@ -32,4 +33,4 @@ part2Slopes = [Slope 1 1, Slope 3 1, Slope 5 1, Slope 7 1, Slope 1 2]
 main :: IO ()
 main = withInputLines "data/day3/input.txt" $ \inputLines -> do
   putStrLn $ "Part 1: " ++ show (treesOnSlope inputLines (Slope 3 1))
-  putStrLn $ "Part 2: " ++ show (product $ map (treesOnSlope inputLines) part2Slopes)
+  putStrLn $ "Part 2: " ++ show (product $ parMap rdeepseq (treesOnSlope inputLines) part2Slopes)
