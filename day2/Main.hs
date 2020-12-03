@@ -3,7 +3,7 @@
 
 module Main where
 
-import Advent2020
+import Advent2020 (withParsedInputLines)
 import Data.Attoparsec.Text
   ( Parser,
     anyChar,
@@ -36,6 +36,6 @@ satisfiesPart2 :: Policy -> Password -> Bool
 satisfiesPart2 Policy {..} p = (index p (x -1) == c) /= (index p (y -1) == c)
 
 main :: IO ()
-main = withInput "data/day2/input.txt" policyAndPassword $ \input -> do
+main = withParsedInputLines "data/day2/input.txt" policyAndPassword $ \input -> do
   putStrLn $ "Part 1: " ++ show (length $ filter (uncurry satisfiesPart1) input)
   putStrLn $ "Part 2: " ++ show (length $ filter (uncurry satisfiesPart2) input)

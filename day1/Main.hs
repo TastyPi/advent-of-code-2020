@@ -2,7 +2,7 @@
 
 module Main where
 
-import Advent2020 (withInput)
+import Advent2020 (withParsedInputLines)
 import Data.Attoparsec.Text (Parser, decimal)
 
 pairs :: [a] -> [[a]]
@@ -29,6 +29,6 @@ entry :: Integral a => Parser a
 entry = decimal
 
 main :: IO ()
-main = withInput "data/day1/input.txt" (entry @Int) $ \entries -> do
+main = withParsedInputLines "data/day1/input.txt" (entry @Int) $ \entries -> do
   putStrLn $ "Part 1: " ++ show (computePart1 entries)
   putStrLn $ "Part 2: " ++ show (computePart2 entries)

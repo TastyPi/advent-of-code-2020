@@ -1,17 +1,22 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Advent2020 (withInput) where
+module Advent2020 (withInputLines, withParsedInputLines) where
 
 import Control.Monad ((>=>))
 import Data.Attoparsec.Text (Parser, parseOnly)
+import Data.Text (Text)
 import Data.Text.Lazy (lines, toStrict)
 import Data.Text.Lazy.IO (hGetContents)
-import System.IO (Handle, IOMode (ReadMode), withFile)
+import System.IO (BufferMode (LineBuffering), Handle, IOMode (ReadMode), hSetBuffering, withFile)
 
-withInput :: String -> Parser a -> ([a] -> IO ()) -> IO ()
-withInput file parser evaluate = withFile file ReadMode $ parseLines parser >=> evaluate
+withInputLines :: String -> ([Text] -> IO a) -> IO a
+withInputLines file evaluate = withFile file ReadMode $ readLines >=> evaluate
 
-parseLines :: Parser a -> Handle -> IO [a]
-parseLines parser handle = do
-  contents <- hGetContents handle
-  return $ either error id . parseOnly parser . toStrict <$> Data.Text.Lazy.lines contents
+withParsedInputLines :: String -> Parser a -> ([a] -> IO b) -> IO b
+withParsedInputLines file parser evaluate =
+  withInputLines file (evaluate . fmap (either error id . parseOnly parser))
+
+readLines :: Handle -> IO [Text]
+readLines handle =
+  hSetBuffering handle LineBuffering
+    >> map toStrict . Data.Text.Lazy.lines <$> hGetContents handle
