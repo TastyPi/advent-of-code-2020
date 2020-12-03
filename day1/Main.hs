@@ -2,8 +2,8 @@
 
 module Main where
 
-import Control.Monad
-import System.IO
+import Advent2020 (withInput)
+import Data.Attoparsec.Text (Parser, decimal)
 
 pairs :: [a] -> [[a]]
 pairs [] = []
@@ -13,8 +13,11 @@ triples :: [a] -> [[a]]
 triples [] = []
 triples (x : xs) = map (x :) (pairs xs) ++ triples xs
 
+isSolution :: (Eq a, Num a) => [a] -> Bool
+isSolution = (== 2020) . sum
+
 findSolutions :: (Eq a, Num a) => [[a]] -> [a]
-findSolutions = map product . filter ((== 2020) . sum)
+findSolutions = map product . filter isSolution
 
 computePart1 :: (Eq a, Num a) => [a] -> [a]
 computePart1 = findSolutions . pairs
@@ -22,10 +25,10 @@ computePart1 = findSolutions . pairs
 computePart2 :: (Eq a, Num a) => [a] -> [a]
 computePart2 = findSolutions . triples
 
-withInput :: Read a => ([a] -> IO b) -> IO b
-withInput f = withFile "data/day1/input.txt" ReadMode $ hGetContents >=> (f . map read . lines)
+entry :: Integral a => Parser a
+entry = decimal
 
 main :: IO ()
-main = withInput @Int $ \input -> do
-  putStrLn $ "Part 1: " ++ show (computePart1 input)
-  putStrLn $ "Part 2: " ++ show (computePart2 input)
+main = withInput "data/day1/input.txt" (entry @Int) $ \entries -> do
+  putStrLn $ "Part 1: " ++ show (computePart1 entries)
+  putStrLn $ "Part 2: " ++ show (computePart2 entries)
