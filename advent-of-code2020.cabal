@@ -1,4 +1,4 @@
-cabal-version:       >=1.10
+cabal-version:       2.2
 
 name:                advent-of-code2020
 version:             0.1.0.0
@@ -11,20 +11,26 @@ common shared-properties
   ghc-options:       -Wall
 
 library advent2020
-  import: shared-properties
+  import:            shared-properties
   hs-source-dirs:    advent2020
   exposed-modules:   Advent2020
   build-depends:     base, attoparsec, text
 
 executable day1
-  import: shared-properties
+  import:            shared-properties
   hs-source-dirs:    day1
   main-is:           Main.hs
   build-depends:     base, advent2020, attoparsec
 
 executable day2
-  import: shared-properties
+  import:            shared-properties
   hs-source-dirs:    day2
   main-is:           Main.hs
   build-depends:     base, advent2020, attoparsec, range, text
+
+executable day3
+  import:            shared-properties
+  hs-source-dirs:    day3
+  main-is:           Main.hs
+  build-depends:     base, advent2020
 
