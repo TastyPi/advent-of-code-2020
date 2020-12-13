@@ -38,5 +38,6 @@ executable day4
   import:            shared-properties
   hs-source-dirs:    day4
   main-is:           Main.hs
-  build-depends:     base, advent2020, attoparsec, lens, text
+  build-depends:     base, advent2020, attoparsec, lens, parser-combinators, text
+  other-modules:     Passport
 

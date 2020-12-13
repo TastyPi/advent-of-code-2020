@@ -1,7 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
 
 module Advent2020
-  ( withInputLines,
+  ( withInput,
+    withInputLines,
     withParsedInput,
     withParsedInputLines,
   )
@@ -23,6 +24,9 @@ import System.IO
     hSetBuffering,
     withFile,
   )
+
+withInput :: String -> (T.Lazy.Text -> IO a) -> IO a
+withInput file evaluate = withFile file ReadMode $ hGetContents >=> evaluate
 
 withInputLines :: String -> ([Text] -> IO a) -> IO a
 withInputLines file evaluate = withFile file ReadMode $ readLines >=> evaluate
