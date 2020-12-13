@@ -5,7 +5,7 @@ module Main where
 
 import Advent2020 (withParsedInputLines)
 import Control.Monad (filterM)
-import Control.Monad.Trans.State.Strict (State, evalState, gets, modify)
+import Control.Monad.Trans.State.Strict (evalState, gets, modify)
 import Data.Attoparsec.Text
   ( Parser,
     anyChar,
@@ -17,6 +17,7 @@ import Data.Attoparsec.Text
     space,
     string,
   )
+import Data.Bitraversable (bitraverse)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Multimap.Table (Table)
@@ -42,23 +43,39 @@ innerRule =
       <*> (pack <$> manyTill anyChar (string " bag" <* option 's' (char 's')))
 
 part1 :: BagRules -> [BagType]
-part1 rs = evalState (filterM (canContainShinyGold rs) (Table.rowKeys rs)) Map.empty
-
-canContainShinyGold :: BagRules -> BagType -> State (Map BagType Bool) Bool
-canContainShinyGold rs b = do
-  s <- gets (Map.lookup b)
-  case s of
-    Just r -> return r
-    Nothing -> case Table.lookup b "shiny gold" rs of
-        Just _ -> do
+part1 rs = evalState (filterM canContainShinyGold (Table.rowKeys rs)) Map.empty
+  where
+    canContainShinyGold b = do
+      s <- gets (Map.lookup b)
+      case s of
+        Just r -> return r
+        Nothing -> case Table.lookup b "shiny gold" rs of
+          Just _ -> do
             modify (Map.insert b True)
             return True
-        Nothing -> do
-            result <- or <$> mapM (canContainShinyGold rs) (Map.keys (Table.row b rs))
+          Nothing -> do
+            result <- or <$> mapM canContainShinyGold (Map.keys (Table.row b rs))
             modify (Map.insert b result)
             return result
+
+part2 :: BagRules -> Int
+part2 rs = evalState (bagCount "shiny gold") Map.empty
+  where
+    bagCount b = do
+      c <- gets (Map.lookup b)
+      case c of
+        Just r -> return r
+        Nothing -> do
+          r <-
+            sum
+              <$> mapM
+                (fmap (\(x, y) -> (x + 1) * y) . bitraverse bagCount pure)
+                (Map.toList (Table.row b rs))
+          modify (Map.insert b r)
+          return r
 
 main :: IO ()
 main = withParsedInputLines "data/day7/input.txt" rule $ \input -> do
   let rules = Table.fromRowMap (Map.fromList input)
   putStrLn $ "Part 1: " ++ show (length $ part1 rules)
+  putStrLn $ "Part 2: " ++ show (part2 rules)
