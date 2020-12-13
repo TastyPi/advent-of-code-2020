@@ -1,8 +1,12 @@
 {-# LANGUAGE TypeApplications #-}
+
 module Main where
 
 import Advent2020 (withInputLines)
 import Control.Arrow ((***))
+import Data.Foldable (find)
+import Data.List (sort)
+import Data.Maybe (fromJust)
 import Data.Text (Text, unpack)
 import qualified Data.Text as T
 
@@ -28,4 +32,7 @@ findIndex bottom top text = go 0 (2 ^ T.length text) (unpack text)
 
 main :: IO ()
 main = withInputLines "data/day5/input.txt" $ \input -> do
-  putStrLn $ "Part 1: " ++ show (maximum $ map (boardingPassToId @Int) input)
+  let sortedIds = sort $ map (boardingPassToId @Int) input
+  putStrLn $ "Part 1: " ++ show (last sortedIds)
+  putStrLn $
+    "Part 2: " ++ show (snd . fromJust $ find (uncurry (/=)) $ zip sortedIds [head sortedIds ..])
