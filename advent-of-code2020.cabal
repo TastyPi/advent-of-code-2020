@@ -53,10 +53,15 @@ executable day6
   main-is:           Main.hs
   build-depends:     base, advent2020, containers, text
 
-
 executable day7
   import:            shared-properties
   hs-source-dirs:    day7
   main-is:           Main.hs
   build-depends:     base, advent2020, attoparsec, containers, multi-containers, text, transformers
+
+executable day8
+  import:            shared-properties
+  hs-source-dirs:    day8
+  main-is:           Main.hs
+  build-depends:     base
 
