@@ -1,17 +1,11 @@
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TupleSections #-}
 
 module Main where
 
 import Advent2020 (withParsedInputLines)
 import Control.Applicative (Alternative ((<|>)))
-import Control.Lens (makeLenses, over, view, (??), (^.), _1)
+import Control.Lens (makeLenses, over, view, (??), (^.))
 import Control.Monad (MonadPlus (mzero), guard, mfilter)
 import Control.Monad.Logic (Logic, MonadLogic (interleave), observeAll)
 import Control.Monad.State (MonadState (put), StateT, evalStateT, gets)
@@ -44,12 +38,10 @@ runProg eval ops = go IntSet.empty (VMState 0 0)
     go visited vm
       | IntSet.member (vm ^. ptr) visited = pure (vm, False)
       | not (inRange (Array.bounds ops) (vm ^. ptr)) = pure (vm, True)
-      | otherwise =
-        eval (ops ! (vm ^. ptr)) ?? vm
-          >>= go (IntSet.insert (vm ^. ptr) visited)
+      | otherwise = eval (ops ! (vm ^. ptr)) ?? vm >>= go (IntSet.insert (vm ^. ptr) visited)
 
 part1 :: Array Int OpCode -> Int
-part1 = view (_1 . acc) . runIdentity . runProg (Identity . runOpCode)
+part1 = view acc . fst . runIdentity . runProg (Identity . runOpCode)
 
 part2 :: Array Int OpCode -> [Int]
 part2 = map (view acc . fst) . observeAll . flip evalStateT False . mfilter snd . runProg eval

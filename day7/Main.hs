@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
@@ -5,7 +6,7 @@ module Main where
 
 import Advent2020 (withParsedInputLines)
 import Control.Monad (filterM)
-import Control.Monad.Trans.State.Strict (evalState, gets, modify)
+import Control.Monad.State (evalState, gets, modify)
 import Data.Attoparsec.Text
   ( Parser,
     anyChar,
